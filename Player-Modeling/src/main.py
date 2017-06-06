@@ -306,6 +306,6 @@ if __name__ == '__main__':
         print(ex)
 
    print("Process is Finished")
-   print("clustering is finished")
+   print("Clustering is finished")
    
    
