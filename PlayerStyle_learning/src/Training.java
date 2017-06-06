@@ -169,7 +169,7 @@ public class Training {
 			 * arrlistfmeasure.add(eval.fMeasure(1));
 			 * arrlistrecall.add(eval.recall(1));
 			 */
-
+			//////////////////////////////////////////////////////////////
 			arrlistpercision.add(eval.weightedPrecision());
 			arrlistfmeasure.add(eval.weightedFMeasure());
 			arrlistrecall.add(eval.weightedRecall());
