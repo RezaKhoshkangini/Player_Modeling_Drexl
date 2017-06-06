@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?eclipse-pydev version="1.0"?><pydev_project>
+<pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
+<path>/${PROJECT_DIR_NAME}/src</path>
+</pydev_pathproperty>
+<pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 3.6</pydev_property>
+<pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">python</pydev_property>
+<pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
+<path>/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Python_Code/weka-wrapper-0.0.1.jar</path>
+<path>/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Python_Code/weka.jar</path>
+<path>/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Python_Code/weka2.jar</path>
+<path>/Users/rezakhoshkangini/Downloads/ph/python-weka-wrapper3-0.1.2</path>
+<path>/Users/rezakhoshkangini/Downloads/ph/python-weka-wrapper3-0.1.2.rar</path>
+<path>/Users/rezakhoshkangini/Downloads/ph/javabridge-1.0.14</path>
+<path>/Users/rezakhoshkangini/Downloads/ph/dist\javabridge-1.0.14.rar</path>
+</pydev_pathproperty>
+</pydev_project>
