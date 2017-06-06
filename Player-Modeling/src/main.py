@@ -17,8 +17,6 @@ from convertor import convert
 from ml_sub_proc import Sub_Machine
 from pip._vendor.progress import counter
 from Individual_Classification import Ind_Classification
-from ctypes.test.test_pep3118 import normalize
-
 
 
 def HisData(my_data):
@@ -281,8 +279,6 @@ def main():
         data_labaled=Culstring_Players(data_binded)
         TmpContiner=pd.DataFrame(data_labaled)
         Lists_Labeled_data[i]=TmpContiner# adding all the labled data into a list
-        
-        
     #writing bindeded data to CSV file
        # path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/NewCSV/BindedData/Comulative_Data/Com0-"+str(i+1)+"_Labeled.csv"
         path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Five/Binded/Five"+str(i+1)+"_Labeled.csv"
