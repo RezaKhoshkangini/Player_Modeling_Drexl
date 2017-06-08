@@ -12,7 +12,7 @@ import pandas as pd
 from builtins import len
 import glob
 import os
-from convertor import convert
+from convertor import convert 
 #import ClassifierData
 from ml_sub_proc import Sub_Machine
 from pip._vendor.progress import counter
@@ -31,8 +31,9 @@ def HisData(my_data):
     
     ReadingTime_total = df['time-read-per']
     NavigateTime_total = df['time-nav-perc']
-    VisitedItem_total = df['visitd-Items']
     Question_right_ratio = df['Qution_right_perc']
+    VisitedItem_total = df['visitd-Items']
+   
     
     
     
@@ -130,7 +131,7 @@ def CategorizeData(my_data,cont):
 def readfile():
     
     #############################
-    path = '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Five'
+    path = '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/cleaned'
     df = pd.DataFrame()
     csvFiles = glob.glob(path + "/*.csv")
     listoflist={}
@@ -156,53 +157,76 @@ def Culstring_Players(My_data):
         #df=pd.DataFrame(data)
         #Defining Lables
         labels_Player_Style = ["Achiever","Explorer","CareLess","Lost"]
+        list_features=['Qution_rightl_Bin','Read_time_Bin','Nav_time_Bin','Vist_Item_Bin']
         BnData=My_data.iloc[:,1:5] # selecting categorical data from dataset
         df=pd.DataFrame(BnData)
         #Assigning players type
         My_data['Player_Type']='nan' # assignin nan as a defult type
         counter=0
         ThresholdValue=0.1
-        while (counter<4):
+        while (counter<len(list_features)+1):
             counter=counter+1
             if counter==1:
-                My_data['Player_Type'] = np.where((df['Read_time_Bin'] =='low') & (df['Qution_rightl_Bin'] =='high'), 'Achiever', 
-                                        np.where((df['Read_time_Bin'] =='high') & (df['Qution_rightl_Bin'] =='high'), 'Explorer',
-                                                  np.where((df['Read_time_Bin'] =='high') & (df['Qution_rightl_Bin'] =='low'), 'Careless',
-                                                            np.where((df['Read_time_Bin'] =='low') & (df['Qution_rightl_Bin'] =='low'), 'Lost',My_data['Player_Type']))))
+                My_data['Player_Type'] = np.where((df[list_features[0]] =='high') & (df[list_features[1]] =='low'), 'Achiever', 
+                                        np.where((df[list_features[0]] =='high') & (df[list_features[1]] =='high'), 'Explorer',
+                                                  np.where((df[list_features[0]] =='low')& (df[list_features[1]] =='high') , 'Careless',
+                                                            np.where((df[list_features[0]] =='low') & (df[list_features[1]] =='low'), 'Lost',My_data['Player_Type']))))
                # dtfrm=pd.DataFrame(data=My_data)
                # print(My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0])
+                print(My_data)
                 if My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0] < ThresholdValue:
                     break
                 
-                
-                
+            
             elif counter==2:
-                My_data['Player_Type'] = np.where((df['Nav_time_Bin'] =='low') & (df['Qution_rightl_Bin'] =='high'), 'Achiever', 
-                                        np.where((df['Nav_time_Bin'] =='high') & (df['Qution_rightl_Bin'] =='high'), 'Explorer',
-                                                  np.where((df['Nav_time_Bin'] =='high') & (df['Qution_rightl_Bin'] =='low'), 'Careless',
-                                                            np.where((df['Nav_time_Bin'] =='low') & (df['Qution_rightl_Bin'] =='low'), 'Lost',My_data['Player_Type']))))
+                My_data['Player_Type'] = np.where((df[list_features[0]] =='high')&(df[list_features[1]] =='medium') & (df[list_features[3]] =='low') & (My_data['Player_Type']=='nan'), 'Achiever', 
+                                        np.where((df[list_features[0]] =='high')&(df[list_features[1]] =='medium') & (df[list_features[3]] =='medium')& (My_data['Player_Type']=='nan'), 'Explorer',My_data['Player_Type']))
+            
+                
+                
+            elif counter==3:
+                My_data['Player_Type'] = np.where((df[list_features[0]] =='medium')&(df[list_features[2]] =='low') & (My_data['Player_Type']=='nan'), 'Achiever', 
+                                        np.where((df[list_features[0]] =='medium')&(df[list_features[2]] =='high') & (My_data['Player_Type']=='nan'), 'Explorer',My_data['Player_Type']))
+                                                 
+                                                 # np.where((df[list_features[0]] =='low')&(df[list_features[2]] =='high') , 'Careless',
+                                                  #          np.where((df[list_features[0]] =='low')&(df[list_features[2]] =='low') , 'Lost',My_data['Player_Type']))))
                 #print(My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0])
                 #print(My_data['Player_Type'].value_counts(normalize=True).loc['nan'])
                 if My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0] < ThresholdValue:
                     break
+            
+            
+            elif counter==4:
+                My_data['Player_Type'] = np.where((df[list_features[1]] =='medium')&(df[list_features[2]] =='low') & (My_data['Player_Type']=='nan'), 'Careless', 
+                                        np.where((df[list_features[1]] =='medium')&(df[list_features[2]] =='high') & (My_data['Player_Type']=='nan'), 'lost',My_data['Player_Type']))
+                                                 
+                                                 # np.where((df[list_features[0]] =='low')&(df[list_features[2]] =='high') , 'Careless',
+                                                  #          np.where((df[list_features[0]] =='low')&(df[list_features[2]] =='low') , 'Lost',My_data['Player_Type']))))
+                #print(My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0])
+                #print(My_data['Player_Type'].value_counts(normalize=True).loc['nan'])
+                if My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0] < ThresholdValue:
+                    break
+            
+            
                 
-            elif counter==3:
-                My_data['Player_Type'] = np.where((df['Vist_Item_Bin'] =='low') & (df['Qution_rightl_Bin'] =='high'), 'Achiever', 
-                                        np.where((df['Vist_Item_Bin'] =='high') & (df['Qution_rightl_Bin'] =='high'), 'Explorer',
-                                                  np.where((df['Vist_Item_Bin'] =='high') & (df['Qution_rightl_Bin'] =='low'), 'Careless',
-                                                            np.where((df['Vist_Item_Bin'] =='low') & (df['Qution_rightl_Bin'] =='low'), 'Lost',My_data['Player_Type']))))
+            elif counter==5:
+                My_data['Player_Type'] = np.where((df[list_features[2]] =='medium')&(df[list_features[3]] =='low')& (My_data['Player_Type']=='nan') , 'Careless', 
+                                        np.where((df[list_features[2]] =='medium')&(df[list_features[3]] =='high')  & (My_data['Player_Type']=='nan'), 'Lost',My_data['Player_Type']))
+                                                 
+                                                 # np.where((df['Qution_rightl_Bin'] =='low')&(df['Vist_Item_Bin'] =='high')  , 'Careless',
+                                                 #           np.where((df['Qution_rightl_Bin'] =='low')&(df['Vist_Item_Bin'] =='low') , 'Lost',My_data['Player_Type']))))
                # print(My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0])
                 if My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0] < ThresholdValue:
                     break
                 
-            elif counter==4:
-                My_data['Player_Type'] = np.where((df['Vist_Item_Bin'] =='low') & (df['Qution_rightl_Bin'] =='medium'), 'Achiever', 
-                                        np.where((df['Vist_Item_Bin'] =='high') & (df['Qution_rightl_Bin'] =='medium'), 'Explorer',
-                                                  np.where((df['Vist_Item_Bin'] =='medium') & (df['Qution_rightl_Bin'] =='low'), 'Careless',
-                                                            np.where((df['Vist_Item_Bin'] =='low') & (df['Qution_rightl_Bin'] =='low'), 'Lost',My_data['Player_Type']))))
-                #print(My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0])
-                if My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0] < ThresholdValue:
-                    break
+#             elif counter==4:
+#                 My_data['Player_Type'] = np.where((df['Qution_rightl_Bin'] =='medium') & (df['Vist_Item_Bin'] =='low') , 'Achiever', 
+#                                         np.where((df['Qution_rightl_Bin'] =='medium') & (df['Vist_Item_Bin'] =='high') , 'Explorer',
+#                                                   np.where((df['Qution_rightl_Bin'] =='low') & (df['Vist_Item_Bin'] =='medium')  , 'Careless',
+#                                                             np.where((df['Qution_rightl_Bin'] =='low') & (df['Vist_Item_Bin'] =='low') , 'Lost',My_data['Player_Type']))))
+#                 #print(My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0])
+#                 if My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0] < ThresholdValue:
+#                     break
                 
             
                 
@@ -246,7 +270,7 @@ def Difrentiate_Labled_Data(LstData):
     
     i=1
     for key in Users_name.keys():
-        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/NewCSV/BindedData/IndUsers/CsV/playerLbl_comu_"+str(i)+".csv"
+        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/cleaned/test-new-algorithm/two_"+str(i)+".csv"
         playerData=Users_name[key]
         WritCsv(playerData,path)
         i=i+1
@@ -281,18 +305,18 @@ def main():
         Lists_Labeled_data[i]=TmpContiner# adding all the labled data into a list
     #writing bindeded data to CSV file
        # path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/NewCSV/BindedData/Comulative_Data/Com0-"+str(i+1)+"_Labeled.csv"
-        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Five/Binded/Five"+str(i+1)+"_Labeled.csv"
+        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Binded/test-new-algorithm/Two"+str(i+1)+"_Labeled.csv"
         WritCsv(data_labaled,path)
         i=i+1
     #
    
    #calling classification class 
-    Sub_Machine()
+   # Sub_Machine()
     
     #Difrentiate_Labled_Data(Lists_Labeled_data)    
     #converting csv file into arff
     Converted_Data_arff = convert()
-    reslut=Ind_Classification()
+   # reslut=Ind_Classification()
 
 if __name__ == '__main__':
    try:

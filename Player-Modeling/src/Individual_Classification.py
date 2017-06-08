@@ -28,4 +28,5 @@ class Ind_Classification(object):
             for row in data:
                 print(*row)
                 
+                
              
