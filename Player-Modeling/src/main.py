@@ -291,7 +291,7 @@ def Difrentiate_Labled_Data(LstData):
 def main():
     print("start to clean data")
     # load data file
-    Csv_Dics=readfile()
+    Csv_Dics=readfile() 
     print(Csv_Dics.keys())
     Lists_Labeled_data={}
     i=0

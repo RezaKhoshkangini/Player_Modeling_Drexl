@@ -69,7 +69,7 @@ public class Training {
 
 		// Loading the main dataset for training
 		final File dir = new File(
-				"/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Comulative_Data/Individual-Players/Ply400-500-600");
+				"/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Arff_Binded");
 		// "/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/NewCSV/BindedData");
 		File[] listFiles = dir.listFiles(new FileFilter() {
 
@@ -480,7 +480,7 @@ public class Training {
 
 	private Object testcrossValidation(Object tt, Evaluation eval, Instances train) throws Exception {
 		// TODO Auto-generated method stub
-		eval.crossValidateModel((Classifier) tt, train, 5, new Random(1));
+		eval.crossValidateModel((Classifier) tt, train, 4, new Random(1));
 
 		return null;
 	}
