@@ -11,12 +11,12 @@ from os.path import isfile, join
 
 def main():
     #listing the name of the csv files
-    os.chdir("//Users/rezakhoshkangini/Documents/CH/CSV/IndividualUsers-6-CH")
+    os.chdir("/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Binded_new")
     for filename in glob.glob("*.csv"):
         print(filename)
         # creating an empty ARFF file 
-        file_out = open("/Users/rezakhoshkangini/Documents/CH/Arff->6CH/"+str(filename)+'.arff', "w")
-        call(['java', '-cp', '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Python_Code/weka.jar', 'weka.core.converters.CSVLoader', '/Users/rezakhoshkangini/Documents/CH/CSV/IndividualUsers-6-CH/'+str(filename), '>', '/Users/rezakhoshkangini/Documents/CH/Arff->6CH/'+str(filename)+'.arff'],
+        file_out = open("/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Arff_new_binded"+str(filename)+'.arff', "w")
+        call(['java', '-cp', '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Python_Code/weka.jar', 'weka.core.converters.CSVLoader', '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Binded_new/'+str(filename), '>', '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Arff_new_binded/'+str(filename)+'.arff'],
                         stdout=file_out)
 
 

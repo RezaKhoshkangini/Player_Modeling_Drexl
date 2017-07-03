@@ -12,6 +12,7 @@ import pandas as pd
 from builtins import len
 import glob
 import os
+import ntpath
 from convertor import convert 
 #import ClassifierData
 from ml_sub_proc import Sub_Machine
@@ -275,8 +276,7 @@ def Difrentiate_Labled_Data(LstData):
         WritCsv(playerData,path)
         i=i+1
 # 
-#   
-       
+#     
     return None
 #  
  
@@ -286,18 +286,24 @@ def Difrentiate_Labled_Data(LstData):
 #     data = loader.load_file(data_dir + "Section0.arff")
 #     data.class_is_last()
 #     print(data)
-     
+def path_leaf(path):
+    head, tail = ntpath.split(path)
+    
+    return tail or ntpath.basename(head)  
         
 def main():
     print("start to clean data")
     # load data file
     Csv_Dics=readfile() 
-    print(Csv_Dics.keys())
+    #print(Csv_Dics.keys())
     Lists_Labeled_data={}
     i=0
     for key in Csv_Dics.keys():
     # data["Read_time_Bin"]=CategorizeData(data['x0_time_read_time_total'], cut_points, labels)
+        print(key)
         data_binded=CategorizeData(Csv_Dics[key],0)
+        nameOfthefile=path_leaf(key)
+        print(nameOfthefile)
         #data_binded=CategorizeData(data)
     #Clustring
         data_labaled=Culstring_Players(data_binded)
@@ -305,7 +311,7 @@ def main():
         Lists_Labeled_data[i]=TmpContiner# adding all the labled data into a list
     #writing bindeded data to CSV file
        # path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/NewCSV/BindedData/Comulative_Data/Com0-"+str(i+1)+"_Labeled.csv"
-        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Binded/test-new-algorithm/Two"+str(i+1)+"_Labeled.csv"
+        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Binded_new/"+nameOfthefile
         WritCsv(data_labaled,path)
         i=i+1
     #
