@@ -143,7 +143,7 @@ def readfile():
     
     #HisData(listoflist) # caculating the Histogram      
     
-    return listoflist
+    return  listoflist
 
 
 def WritCsv(data,path):
@@ -228,10 +228,10 @@ def Culstring_Players(My_data):
 #                 #print(My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0])
 #                 if My_data[My_data['Player_Type']=="nan"].shape[0]/My_data.shape[0] < ThresholdValue:
 #                     break
-                
             
                 
-        print('Player Style Assigning is done')
+        print(
+                'Player Style Assigning is done')
         return My_data
             
         

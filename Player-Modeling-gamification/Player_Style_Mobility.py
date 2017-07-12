@@ -23,6 +23,7 @@ from unittest.mock import inplace
 
 
 
+
 def readfile():
     
     #############################
@@ -55,14 +56,50 @@ def CalculateRatio(playerData,Ban):
         resultSum=playerData.sum(axis=0)
     elif Ban==1:
         SumCol=pd.DataFrame(playerData)
+        SumCol2=SumCol.T
         resultSum=SumCol.iloc[:,0:].apply(lambda x: x / x.sum())
    # print(PrcentageMode)
   
     
     return resultSum
+ 
+def label(lbl): 
+    bl2=lbl.index.values.tolist()
+    My_Str = ', '.join(bl2)
+    return My_Str
     
+def WritToCsv(DicPercentMode):
     
-    
+    with open("/Users/rezakhoshkangini/Documents/CH/Player_Modeling/All/output_csv_percentage/dict2csv.csv", 'w') as csv_file:
+        #writer = csv.writer(csv_file, delimiter=',')
+   
+        cols_written = False
+        
+        for key, values in DicPercentMode.items():
+            if not cols_written:
+                cols_written = list(values.to_dict()[0].keys())
+                csv_file.write("Id,")
+                csv_file.write(",".join(cols_written))
+                csv_file.write("\n")
+                #csv_file.write(",".join(cols_written))
+            key_written= False
+            for i in cols_written:
+                if not key_written:
+                    key_written=key
+                    csv_file.write(key+",")
+                csv_file.write(str(values.to_dict()[0][i])+",")
+               
+               # print(values.to_dict()[0][i],end='')  # Josep code
+               
+            
+            #print()
+            csv_file.write("\n")
+          
+    return None
+   
+         
+def testdic(mydictd): 
+    print(mydictd)  
 
     
 def main():
@@ -75,9 +112,13 @@ def main():
         #RatioPlayers["Player{0}".format(key)]=[]
     for key in RatioPlayers.keys():
         DicPercentMode["Player{0}".format(key)]=CalculateRatio(RatioPlayers[key],1)
-        
-    print(RatioPlayers.keys())    
-        
+     
+     
+    WritToCsv(DicPercentMode)   
+    for key in DicPercentMode.keys():
+        testdic(DicPercentMode[key])
+   # print(RatioPlayers.keys())    
+    print(DicPercentMode.keys())    
         
 if __name__ == '__main__':
     try:
