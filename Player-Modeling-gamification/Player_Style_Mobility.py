@@ -125,7 +125,7 @@ if __name__ == '__main__':
         main()
     except Exception as ex:
         print(ex)
-    print("Process is Finished")
+    print("Process is Finished and mamad khar ast")
     print("Clustering is finished")
     
     
