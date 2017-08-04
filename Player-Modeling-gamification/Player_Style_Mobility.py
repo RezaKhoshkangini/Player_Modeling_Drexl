@@ -18,7 +18,7 @@ from pandas.core.frame import DataFrame
 from numpy.distutils.fcompiler import none
 from matplotlib.pyplot import axis
 from unittest.mock import inplace
-
+from numpy import genfromtxt
 
 
 
@@ -29,18 +29,23 @@ def readfile():
     #############################
     #path = csv.reader(open('/Users/rezakhoshkangini/Documents/CH/Player_Modeling/All/All.csv'))
     path = '/Users/rezakhoshkangini/Documents/CH/Player_Modeling/All'
-    
+   # path ='/Users/rezakhoshkangini/Documents/CH/Player_Modeling/WbyW/w12/'
     csvFiles = glob.glob(path + "/*.csv")
     listoflist={}
     for files in csvFiles:
         csvlist=pd.read_csv(files)
         listoflist[files]=csvlist
-   
-    
     #HisData(listoflist) # caculating the Histogram      
     df = pd.DataFrame(csvlist)
     return df
     
+def readActiveplayer():
+     # read the id of Active player
+   
+    dfs = pd.read_csv("/Users/rezakhoshkangini/Documents/CH/Player_Modeling/All/Active/Active>8weeks.csv")
+    LstAct=list(dfs["ID"].values)
+    
+    return LstAct
  
 def Dif_Players(Mfile):
     #dividing the whole players into different dictionary based on their ID
@@ -71,6 +76,7 @@ def label(lbl):
 def WritToCsv(DicPercentMode):
     
     with open("/Users/rezakhoshkangini/Documents/CH/Player_Modeling/All/output_csv_percentage/dict2csv.csv", 'w') as csv_file:
+   # with open("/Users/rezakhoshkangini/Documents/CH/Player_Modeling/WbyW/w12/W12.csv", 'w') as csv_file:
         #writer = csv.writer(csv_file, delimiter=',')
    
         cols_written = False
@@ -104,14 +110,18 @@ def testdic(mydictd):
     
 def main():
     Csv_Dics=readfile()
+    LisActive=readActiveplayer()
     listofPlayers=Dif_Players(Csv_Dics)
     RatioPlayers={}
     DicPercentMode={}
     for key in listofPlayers.keys():
-        RatioPlayers["Player{0}".format(key)]=CalculateRatio(listofPlayers[key],0)
+        if key in LisActive:
+            
+            RatioPlayers["Player{0}".format(key)]=CalculateRatio(listofPlayers[key],0)
         #RatioPlayers["Player{0}".format(key)]=[]
+    
     for key in RatioPlayers.keys():
-        DicPercentMode["Player{0}".format(key)]=CalculateRatio(RatioPlayers[key],1)
+            DicPercentMode["Player{0}".format(key)]=CalculateRatio(RatioPlayers[key],1)
      
      
     WritToCsv(DicPercentMode)   
@@ -125,17 +135,10 @@ if __name__ == '__main__':
         main()
     except Exception as ex:
         print(ex)
-    print("Process is Finished and mamad khar ast")
+    print("Process is Finished and mammad khar ast")
     print("Clustering is finished")
     
     
     
-    
 
-#     LisTmp=['PLAYER_ID','BikeSharing_Km','BikeSharing_Trips','Bike_Km',
-#             'Bike_Trips','Bus_Km','Bus_Trips','Car_Km','Car_Trips','NoCar_Trips','PandR_Trips',          
-#             'Recommendations','Train_Km','Train_Trips','Transit_Trips','Walk_Km','Walk_Trips',            
-#             'ZeroImpact_Trips','green leaves']
-#     
-#    
     
