@@ -69,7 +69,7 @@ public class Training {
 
 		// Loading the main dataset for training
 		final File dir = new File(
-				"/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Arff_Binded");
+				"/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Arff_binded/Old_Arff_binded_07062017");
 		// "/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/NewCSV/BindedData");
 		File[] listFiles = dir.listFiles(new FileFilter() {
 
@@ -232,7 +232,24 @@ public class Training {
 		System.out.println("Total Recall:" + CalAvgPer_Re_F(arrlistrecall) + "\n");
 		System.out.println("Total F-Measure:" + CalAvgPer_Re_F(arrlistfmeasure) + "\n");
 		System.out.println("Total RoC:" + CalAvgPer_Re_F(arrlistRoC) + "\n");
+		System.out.println("TP_Average: " + CalAvgPer_Re_F_int(arrlistTP) + "\n");
+		System.out.println("FP_Average: " + CalAvgPer_Re_F_int(arrlistFP) + "\n");
+		System.out.println("TN_Average: " + CalAvgPer_Re_F_int(arrlistTN) + "\n");
+		System.out.println("FN_Average: " + CalAvgPer_Re_F_int(arrlistFN) + "\n");
 		System.out.println("-------------------------------- \n");
+	}
+
+	private int CalAvgPer_Re_F_int(ArrayList<Integer> arrlistTP) {
+		// TODO Auto-generated method stub
+		Integer sum = (Integer) 0;
+		if (!arrlistTP.isEmpty()) {
+			for (double lst : arrlistTP) {
+				sum = (int) (sum + lst);
+			}
+
+			return sum.intValue() / arrlistTP.size();
+		}
+		return sum;
 	}
 
 	private double CalAvgPer_Re_F(ArrayList<Double> arrlist) {
