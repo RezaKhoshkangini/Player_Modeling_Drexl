@@ -88,38 +88,42 @@ def CategorizeData(my_data,cont):
         #Define min and max values:
         minval = col.min()
         maxval = col.max()
-        #cut_points=[(minval+maxval)/3,((minval+maxval)/3)*2]
-        #breaking_points=minval+maxval/3,((minval+maxval)/3)*2
-        if i==0 :
-            #create list by adding min and max to cut_points
-            break_points = [minval] + cut_points_Read + [maxval]
-            if not labels:
-                labels = range(len(cut_points_Read)+1)
-        elif i==1:
-            break_points = [minval] + cut_points_Nav + [maxval]
-            if not labels:
-                labels = range(len(cut_points_Nav)+1)
-        elif i==2:   
-            break_points = [minval] + cut_points_visItem + [maxval]
-            if not labels:
-                labels = range(len(cut_points_visItem)+1)
-        else: 
-            break_points = [minval] + cut_points_QR + [maxval]
-            if not labels:
-                labels = range(len(cut_points_QR)+1)
+        avgval= col.mean()
+        cut_points_General=[(minval+avgval)/2,(maxval+avgval)/2] 
+        break_points = [minval] + cut_points_General + [maxval]
+     
+#         if i==0 :
+#             #create list by adding min and max to cut_points
+#             break_points = [minval] + cut_points_Read + [maxval]
+#             if not labels:
+#                 labels = range(len(cut_points_Read)+1)
+#         elif i==1:
+#             break_points = [minval] + cut_points_Nav + [maxval]
+#             if not labels:
+#                 labels = range(len(cut_points_Nav)+1)
+#         elif i==2:   
+#             break_points = [minval] + cut_points_visItem + [maxval]
+#             if not labels:
+#                 labels = range(len(cut_points_visItem)+1)
+#         else: 
+#             break_points = [minval] + cut_points_QR + [maxval]
+#             if not labels:
+#                 labels = range(len(cut_points_QR)+1)
                 
+       
+        
         #if no labels provided, use default labels 0 ... (n-1)
         #Binning using cut function of pandas
         #colBin = pd.cut(col,bins=break_points,labels=labels,include_lowest=True)
         colBin = pd.cut(col,3,labels=labels,include_lowest=True)
         if i==0:
-            my_data["Read_time_Bin"]=colBin
-        elif i==1:
             my_data["Nav_time_Bin"]=colBin
+        elif i==1:
+            my_data["Read_time_Bin"]=colBin
         elif i==2:       
-            my_data["Vist_Item_Bin"]=colBin
-        else:
             my_data["Qution_rightl_Bin"]=colBin
+        else:
+            my_data["Vist_Item_Bin"]=colBin
     #print (pd.value_counts(data["Read_time_Bin"], sort=False))
     df2=pd.DataFrame(my_data)
     print(df2)
@@ -199,7 +203,7 @@ def Culstring_Players(My_data):
             
             elif counter==4:
                 My_data['Player_Type'] = np.where((df[list_features[1]] =='medium')&(df[list_features[2]] =='low') & (My_data['Player_Type']=='nan'), 'Careless', 
-                                        np.where((df[list_features[1]] =='medium')&(df[list_features[2]] =='high') & (My_data['Player_Type']=='nan'), 'lost',My_data['Player_Type']))
+                                        np.where((df[list_features[1]] =='medium')&(df[list_features[2]] =='high') & (My_data['Player_Type']=='nan'), 'Lost',My_data['Player_Type']))
                                                  
                                                  # np.where((df[list_features[0]] =='low')&(df[list_features[2]] =='high') , 'Careless',
                                                   #          np.where((df[list_features[0]] =='low')&(df[list_features[2]] =='low') , 'Lost',My_data['Player_Type']))))
@@ -311,7 +315,7 @@ def main():
         Lists_Labeled_data[i]=TmpContiner# adding all the labled data into a list
     #writing bindeded data to CSV file
        # path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/NewCSV/BindedData/Comulative_Data/Com0-"+str(i+1)+"_Labeled.csv"
-        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Binded_new/"+nameOfthefile
+        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Binded_new_Trento/"+nameOfthefile
         WritCsv(data_labaled,path)
         i=i+1
     #
