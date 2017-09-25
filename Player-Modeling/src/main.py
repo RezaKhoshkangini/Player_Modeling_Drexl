@@ -61,27 +61,19 @@ def HisData(my_data):
     return None  
     
 def CategorizeData(my_data,cont):
+    MydataSample=[]
+    MySample=pd.DataFrame(MydataSample)
     fd=pd.DataFrame(my_data)
     # HisData(my_data) 
     # print(data)
     
-    # selecting the cutting points based on th distribution
-    if cont==0:
-        cut_points_Read = [0.38,0.5] ; cut_points_Nav=[0.3,0.35]; cut_points_QR= [0.65,0.75]; cut_points_visItem = [30,40]
-    elif cont==1:
-        cut_points_Read = [0.38,0.48] ; cut_points_Nav=[0.3,0.35]; cut_points_QR= [0.60,0.75]; cut_points_visItem = [55,75]
-    elif cont==2:
-        cut_points_Read = [0.38,0.45] ; cut_points_Nav=[0.25,0.32]; cut_points_QR= [0.60,0.75]; cut_points_visItem = [100,120]
-    elif cont==3:
-        cut_points_Read = [0.38,0.5] ; cut_points_Nav=[0.25,0.32]; cut_points_QR= [0.60,0.75]; cut_points_visItem = [130,160]
-    else:
-        cut_points_Read = [0.38,0.5] ; cut_points_Nav=[0.25,0.32]; cut_points_QR= [0.60,0.75]; cut_points_visItem = [180,210]
-
-   
+    MySample=my_data.head(0)
+    MySample["Id_Name"]= my_data.iloc[:,0] 
    
     labels = ["low","medium","high"]
-    for i in range(7):
-        col=my_data.iloc[:,i+2]
+    for i in range(len(my_data.columns)-1):
+        print(my_data.iloc[:,i+1])
+        col=my_data.iloc[:,i+1]
         if len(set(col))!=1:
             minval = col.min()
             maxval = col.max()
@@ -96,62 +88,26 @@ def CategorizeData(my_data,cont):
             elif col[1]>=0.5:
                 colBin = pd.cut(col,3,labels=labels,include_lowest=True)
                 colBin[:]='high'       
-#             if i==0 :
-#                 #create list by adding min and max to cut_points
-#                 break_points = [minval] + cut_points_Read + [maxval]
-#                 if not labels:
-#                     labels = range(len(cut_points_Read)+1)
-#             elif i==1:
-#                 break_points = [minval] + cut_points_Nav + [maxval]
-#                 if not labels:
-#                     labels = range(len(cut_points_Nav)+1)
-#             elif i==2:   
-#                 break_points = [minval] + cut_points_visItem + [maxval]
-#                 if not labels:
-#                     labels = range(len(cut_points_visItem)+1)
-#             else: 
-#                 break_points = [minval] + cut_points_QR + [maxval]
-#                 if not labels:
-#                     labels = range(len(cut_points_QR)+1)
-                
-       
+#             
+        #Minserting the label colun to dtaframe    
+        MySample.iloc[:,i+1]=colBin    
         
-        #if no labels provided, use default labels 0 ... (n-1)
-        #Binning using cut function of pandas
-        #colBin = pd.cut(col,bins=break_points,labels=labels,include_lowest=True)
-            
-            
-            
-        if i==0:
-            my_data["time_nav_time_total"]=colBin
-        elif i==1:
-            my_data["time_read_time_total"]=colBin
-        elif i==2:       
-            my_data["questions_right_ratio"]=colBin
-        elif i==3:
-            my_data["items_visited_total"]=colBin
-        elif i==4:
-            my_data["time_map/time_total"]=colBin
-        elif i==5:
-            my_data["questions_visited_total"]=colBin
-        elif i==6:
-            my_data["questions_wrong_ratio"]=colBin
+        
+         
             
     #print (pd.value_counts(data["Read_time_Bin"], sort=False))
-    df2=pd.DataFrame(my_data)
-    print(df2)
-    #selwcting columns for individual sections
-    #categorical_data=df2.iloc[:,[1,8,9,10,11]]
+   #selwcting columns for individual sections
+   
     #selecting columns for comulative data
-    categorical_data=df2.iloc[:,[1,9,10,11,12,13,14,15]]
-    return categorical_data
+   # categorical_data=df2.iloc[:,[1,14,15,16,17,18,19,20,21,22,23,24,25]]
+    return MySample
 
 def readfile():
     
     #############################
    # path = '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/cleaned'
    # path ='/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/CSV'
-    path='/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/CSV_Outlier_Excluded'
+    path='/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/CSV_Outlier_Exclude_12Feature'
     df = pd.DataFrame()
     csvFiles = glob.glob(path + "/*.csv")
     listoflist={}
@@ -318,22 +274,18 @@ def Difrentiate_Labled_Data(LstData):
     return None
 #  
  
-# def class_data():
-#     data_dir = "/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/NewCSV/BindedData/"
-#     loader = Loader(classname="weka.core.converters.ArffLoader")
-#     data = loader.load_file(data_dir + "Section0.arff")
-#     data.class_is_last()
-#     print(data)
 def path_leaf(path):
     head, tail = ntpath.split(path)
     
     return tail or ntpath.basename(head)  
 
+
+
 def extract_type(my_sample,play_feature_dic_new,feature_weights):
-   # print (feature_weights)
+    # print (feature_weights)
     my_vote = {"Achiever":0,"Explorer":0,"Careless":0,"other":0} 
     for key,item in play_feature_dic_new.items():
-       # print(key)
+        # print(key)
         if my_sample[key]=='medium':
             # there is no effect with this medium vaue 
             #print('this feature is medium')
@@ -346,12 +298,83 @@ def extract_type(my_sample,play_feature_dic_new,feature_weights):
                 else:
                     my_vote[key1]-=feature_weight
                     
-           # print(my_vote)               
+            print(my_vote)               
                  
-    return(max(my_vote,key=my_vote.get))           #returns only labels
-   # return(sorted(my_vote,key=my_vote.get, reverse=True))
+    #return(max(my_vote,key=my_vote.get))           #returns only labels
+    return(sorted(my_vote,key=my_vote.get, reverse=True)[0])
+   
+
+def cal_weight(my_section):  
+    
+    if my_section==0:
+            # info Gain
+            #  list_features_new=['questions_visited_total','questions_right_ratio','time_read_time_total','items_visited_total','questions_wrong_ratio','time_map/time_total','time_nav_time_total'] # inf gain
+            # Corelation
+            list_features_new=['reading_min','items_visited_total','item_visited_new','reading_max','questions_revisits','questions_visited_total','questions_wrong_ratio','questions_right_ratio',
+                               'items_revisits','time_read_time_total','time_nav_time_total','time_map/time_total'] # inf gain
+    elif my_section==1:
+            # InfoGain Order
+            # list_features_new=['items_visited_total','time_map/time_total','questions_visited_total','questions_wrong_ratio','questions_right_ratio','time_read_time_total','time_nav_time_total'] # inf gain
+            # Correlation Order
+            list_features_new=['items_visited_total','time_map/time_total','item_visited_new','questions_visited_total','items_revisits','time_read_time_total','reading_min','reading_max','time_nav_time_total',
+                               'questions_revisits','questions_wrong_ratio','questions_right_ratio'] # inf gain
+    elif my_section==2:
+            # Info Gain order
+            #list_features_new=['items_visited_total','time_map/time_total','questions_visited_total','questions_wrong_ratio','questions_right_ratio','time_read_time_total','time_nav_time_total'] # inf gain
+            # Correlation Order
+            list_features_new=['items_visited_total','questions_visited_total','time_map/time_total','reading_max','reading_min','item_visited_new','questions_right_ratio','questions_wrong_ratio','items_revisits',
+                               'questions_revisits','time_nav_time_total','time_read_time_total'] # inf gain
+    else:    #for section 4
+            #Infogain Order
+           # list_features_new=['questions_wrong_ratio','questions_right_ratio','time_nav_time_total','time_read_time_total','questions_visited_total','time_map/time_total','items_visited_total'] # inf gain
+            #Correlation order
+            list_features_new=['questions_wrong_ratio','questions_right_ratio','reading_min','reading_max','time_read_time_total','questions_visited_total','items_visited_total','time_nav_time_total','item_visited_new',
+                               'time_map/time_total','items_revisits', 'questions_revisits'] # inf gain
+
+    
+    # weight of features with Info Gain
+#     feature_weights={'items_visited_total':len(list_features_new)-list_features_new.index('items_visited_total'),
+#                'questions_right_ratio':len(list_features_new)-list_features_new.index('questions_right_ratio'),
+#                'questions_visited_total':len(list_features_new)-list_features_new.index('questions_visited_total'),
+#                'questions_wrong_ratio':len(list_features_new)-list_features_new.index('questions_wrong_ratio'),
+#                'time_read_time_total':len(list_features_new)-list_features_new.index('time_read_time_total'),
+#                'time_nav_time_total':len(list_features_new)-list_features_new.index('time_nav_time_total'),
+#                'time_map/time_total':len(list_features_new)-list_features_new.index('time_map/time_total')}
+    
+#     feature_weights={'items_visited_total':len(list_features_new)-list_features_new.index('items_visited_total'),
+#                  'questions_right_ratio':len(list_features_new)-list_features_new.index('questions_right_ratio'),
+#                  'questions_visited_total':len(list_features_new)-list_features_new.index('questions_visited_total'),
+#                  'questions_wrong_ratio':len(list_features_new)-list_features_new.index('questions_wrong_ratio'),
+#                  'time_read_time_total':len(list_features_new)-list_features_new.index('time_read_time_total'),
+#                  'time_nav_time_total':len(list_features_new)-list_features_new.index('time_nav_time_total'),
+#                  'time_map/time_total':len(list_features_new)-list_features_new.index('time_map/time_total'),
+#                  'reading_min':len(list_features_new)-list_features_new.index('reading_min'),
+#                  'reading_max':len(list_features_new)-list_features_new.index('reading_max'),
+#                  'item_visited_new':len(list_features_new)-list_features_new.index('item_visited_new'),
+#                  'items_revisits':len(list_features_new)-list_features_new.index('items_revisits'),
+#                  'questions_revisits':len(list_features_new)-list_features_new.index('questions_revisits')}
+    
+#     
+    feature_weights={'items_visited_total':8,
+                 'questions_right_ratio':10,
+                 'questions_visited_total':5,
+                 'questions_wrong_ratio':10,
+                 'time_read_time_total':4,
+                 'time_nav_time_total':6,
+                 'time_map/time_total':1,
+                 'reading_min':4,
+                 'reading_max':4,
+                 'item_visited_new':3,
+                 'items_revisits':3,
+                 'questions_revisits':5,
+                 }
     
     
+    
+    
+    
+    
+    return  feature_weights
     
     
 def Clustering_new(My_binded_data,my_section):
@@ -361,61 +384,38 @@ def Clustering_new(My_binded_data,my_section):
                         'questions_visited_total':{'Achiever':'high','Explorer':'low','Careless':'low','other':'low'},
                         'questions_wrong_ratio':{'Achiever':'low','Explorer':'low','Careless':'high','other':'high'},
                         'time_read_time_total':{'Achiever':'high','Explorer':'low','Careless':'low','other':'low'},
-                        'time_nav_time_total':{'Achiever':'high','Explorer':'low','Careless':'low','other':'high'},
-                        'time_map/time_total':{'Achiever':'high','Explorer':'high','Careless':'low','other':'low'}}
+                        'time_nav_time_total':{'Achiever':'low','Explorer':'high','Careless':'low','other':'high'},
+                        'time_map/time_total':{'Achiever':'high','Explorer':'high','Careless':'low','other':'low'},
+                        'reading_min':{'Achiever':'high','Explorer':'low','Careless':'low','other':'low'},
+                        'reading_max':{'Achiever':'high','Explorer':'low','Careless':'low','other':'low'},
+                        'item_visited_new':{'Achiever':'low','Explorer':'high','Careless':'low','other':'low'},
+                        'items_revisits':{'Achiever':'low','Explorer':'high','Careless':'high','other':'high'},
+                        'questions_revisits':{'Achiever':'high','Explorer':'low','Careless':'low','other':'high'}
+                        }
     
-    # list of features in orders for overall fix for all section
-  #  list_features_new=['items_visited_total','questions_right_ratio','questions_visited_total','questions_wrong_ratio','time_read_time_total','time_nav_time_total','time_map/time_total'] # inf gain
-    if my_section==0:
-            list_features_new=['questions_visited_total','questions_right_ratio','time_read_time_total','items_visited_total','questions_wrong_ratio','time_map/time_total','time_nav_time_total'] # inf gain
-    elif my_section==1:
-            list_features_new=['items_visited_total','time_map/time_total','questions_visited_total','questions_wrong_ratio','questions_right_ratio','time_read_time_total','time_nav_time_total'] # inf gain
-    elif my_section==2:
-            list_features_new=['items_visited_total','time_map/time_total','questions_visited_total','questions_wrong_ratio','questions_right_ratio','time_read_time_total','time_nav_time_total'] # inf gain
-    else:    #for section 4
-            list_features_new=['questions_wrong_ratio','questions_right_ratio','time_nav_time_total','time_read_time_total','questions_visited_total','time_map/time_total','items_visited_total'] # inf gain
-
-    
-    # weight of features 
-#     feature_weights={'items_visited_total':len(list_features_new)-list_features_new.index('items_visited_total'),
-#                'questions_right_ratio':len(list_features_new)-list_features_new.index('questions_right_ratio'),
-#                'questions_visited_total':len(list_features_new)-list_features_new.index('questions_visited_total'),
-#                'questions_wrong_ratio':len(list_features_new)-list_features_new.index('questions_wrong_ratio'),
-#                'time_read_time_total':len(list_features_new)-list_features_new.index('time_read_time_total'),
-#                'time_nav_time_total':len(list_features_new)-list_features_new.index('time_nav_time_total'),
-#                'time_map/time_total':len(list_features_new)-list_features_new.index('time_map/time_total')}
-    
-    feature_weights={'items_visited_total':7,
-               'questions_right_ratio':6,
-               'questions_visited_total':5,
-               'questions_wrong_ratio':6,
-               'time_read_time_total':4,
-               'time_nav_time_total':4,
-               'time_map/time_total':1}
-    
-    
-    
-   # print(My_binded_data)
+  
+    feature_weights=cal_weight(my_section)
+    # print(My_binded_data)
     my_result=[]
     for indx in range(0,len(My_binded_data)):
         #print(My_binded_data)
         
-        my_result.append(extract_type(My_binded_data.iloc[indx,1:8],play_feature_dic_new,feature_weights))
+        my_result.append(extract_type(My_binded_data.iloc[indx,1:13],play_feature_dic_new,feature_weights))
         
     My_binded_data['Player_Type']=my_result
     print(My_binded_data)
     
-    return My_binded_data
+   # return My_binded_data
     
-#     csvfile = '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Cluster_Validation/Sectoin'+str(my_section)+'.csv'
+  #  csvfile = '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Cluster_Validation/Sectoin'+str(my_section)+'.csv'
 # 
-#     #Assuming res is a flat list
-#     with open(csvfile, "w") as output:
-#         writer = csv.writer(output, lineterminator='\n')
-#         for val in My_binded_data:
-#             writer.writerow([val])
+     #Assuming res is a flat list
+    #with open(csvfile, "w") as output:
+       # writer = csv.writer(output, lineterminator='\n')
+      #  for val in My_binded_data:
+      #      writer.writerow([val])
     
-   
+    return My_binded_data
     
     
             
@@ -440,7 +440,7 @@ def main():
         Lists_Labeled_data[i]=TmpContiner# adding all the labled data into a list
     #writing bindeded data to CSV file
        
-        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/Labeled/L"+nameOfthefile
+        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/Labeled/M"+nameOfthefile
         WritCsv(data_labaled,path)
         i=i+1
     #
