@@ -18,6 +18,8 @@ from convertor import convert
 from ml_sub_proc import Sub_Machine
 from pip._vendor.progress import counter
 from Individual_Classification import Ind_Classification
+from Order_Extraction import Class_Order_Extration
+import atribTest
 
 
 def HisData(my_data):
@@ -261,7 +263,7 @@ def Difrentiate_Labled_Data(LstData):
         Users_name.setdefault(key,[]).append(list4.iloc[counter,:])
        # Users_name.setdefault(key,[]).append(list5.iloc[counter,:])
         counter=counter+1
-    print(Users_name.keys())
+    #print(Users_name.keys())
     
     i=1
     for key in Users_name.keys():
@@ -280,8 +282,7 @@ def path_leaf(path):
     return tail or ntpath.basename(head)  
 
 
-
-def extract_type(my_sample,play_feature_dic_new,feature_weights):
+def extract_type(my_sample,play_feature_dic_new,feature_weights,feature_orders):
     # print (feature_weights)
     my_vote = {"Achiever":0,"Explorer":0,"Careless":0,"other":0} 
     for key,item in play_feature_dic_new.items():
@@ -294,52 +295,74 @@ def extract_type(my_sample,play_feature_dic_new,feature_weights):
             feature_weight=feature_weights[key]
             for key1 in item.keys():
                 if (item[key1]==my_sample[key]):
-                    my_vote[key1]+=feature_weight
+                    my_vote[key1]+=feature_weight*1/(feature_orders.index(key)+1)
                 else:
-                    my_vote[key1]-=feature_weight
+                    my_vote[key1]-=feature_weight*1/(feature_orders.index(key)+1)
                     
-            print(my_vote)               
-                 
+            #print(my_vote)               
+    
+    if len(set(my_vote.values()))==2:
+        print('they are similar')
+        print(my_vote)              
     #return(max(my_vote,key=my_vote.get))           #returns only labels
     return(sorted(my_vote,key=my_vote.get, reverse=True)[0])
    
+def cal_orders(list_features):
+    print()
+    
+
 
 def cal_weight(my_section):  
     
-    if my_section==0:
-            # info Gain
-            #  list_features_new=['questions_visited_total','questions_right_ratio','time_read_time_total','items_visited_total','questions_wrong_ratio','time_map/time_total','time_nav_time_total'] # inf gain
-            # Corelation
-            list_features_new=['reading_min','items_visited_total','item_visited_new','reading_max','questions_revisits','questions_visited_total','questions_wrong_ratio','questions_right_ratio',
-                               'items_revisits','time_read_time_total','time_nav_time_total','time_map/time_total'] # inf gain
-    elif my_section==1:
-            # InfoGain Order
-            # list_features_new=['items_visited_total','time_map/time_total','questions_visited_total','questions_wrong_ratio','questions_right_ratio','time_read_time_total','time_nav_time_total'] # inf gain
-            # Correlation Order
-            list_features_new=['items_visited_total','time_map/time_total','item_visited_new','questions_visited_total','items_revisits','time_read_time_total','reading_min','reading_max','time_nav_time_total',
-                               'questions_revisits','questions_wrong_ratio','questions_right_ratio'] # inf gain
-    elif my_section==2:
-            # Info Gain order
-            #list_features_new=['items_visited_total','time_map/time_total','questions_visited_total','questions_wrong_ratio','questions_right_ratio','time_read_time_total','time_nav_time_total'] # inf gain
-            # Correlation Order
-            list_features_new=['items_visited_total','questions_visited_total','time_map/time_total','reading_max','reading_min','item_visited_new','questions_right_ratio','questions_wrong_ratio','items_revisits',
-                               'questions_revisits','time_nav_time_total','time_read_time_total'] # inf gain
-    else:    #for section 4
-            #Infogain Order
-           # list_features_new=['questions_wrong_ratio','questions_right_ratio','time_nav_time_total','time_read_time_total','questions_visited_total','time_map/time_total','items_visited_total'] # inf gain
-            #Correlation order
-            list_features_new=['questions_wrong_ratio','questions_right_ratio','reading_min','reading_max','time_read_time_total','questions_visited_total','items_visited_total','time_nav_time_total','item_visited_new',
-                               'time_map/time_total','items_revisits', 'questions_revisits'] # inf gain
-
+   atribTest(my_section)
+   # Class_Order_Extration()
+   # Class_Order_Extration.orderextraction('order_finding')
     
+    feature_orders=['questions_visited_total','questions_right_ratio','time_read_time_total','items_visited_total','questions_wrong_ratio',
+                                  'time_map/time_total','time_nav_time_total','reading_min','reading_max','item_visited_new','items_revisits','questions_revisits']
+    
+    
+#     if my_section==0:
+#             # info Gain
+              # list_features_new=['questions_visited_total','questions_right_ratio','time_read_time_total','items_visited_total','questions_wrong_ratio',
+              #                    'time_map/time_total','time_nav_time_total',] # inf gain
+#              Corelation
+#             list_features_new=['reading_min','items_visited_total','item_visited_new','reading_max','questions_revisits','questions_visited_total','questions_wrong_ratio','questions_right_ratio',
+#                                'items_revisits','time_read_time_total','time_nav_time_total','time_map/time_total'] # inf gain
+#     elif my_section==1:
+#             # InfoGain Order
+#             # list_features_new=['items_visited_total','time_map/time_total','questions_visited_total','questions_wrong_ratio','questions_right_ratio','time_read_time_total','time_nav_time_total'] # inf gain
+#             # Correlation Order
+#             list_features_new=['items_visited_total','time_map/time_total','item_visited_new','questions_visited_total','items_revisits','time_read_time_total','reading_min','reading_max','time_nav_time_total',
+#                                'questions_revisits','questions_wrong_ratio','questions_right_ratio'] # inf gain
+#     elif my_section==2:
+#             # Info Gain order
+#             #list_features_new=['items_visited_total','time_map/time_total','questions_visited_total','questions_wrong_ratio','questions_right_ratio','time_read_time_total','time_nav_time_total'] # inf gain
+#             # Correlation Order
+#             list_features_new=['items_visited_total','questions_visited_total','time_map/time_total','reading_max','reading_min','item_visited_new','questions_right_ratio','questions_wrong_ratio','items_revisits',
+#                                'questions_revisits','time_nav_time_total','time_read_time_total'] # inf gain
+#     else:    #for section 4
+#             #Infogain Order
+#            # list_features_new=['questions_wrong_ratio','questions_right_ratio','time_nav_time_total','time_read_time_total','questions_visited_total','time_map/time_total','items_visited_total'] # inf gain
+#             #Correlation order
+#             list_features_new=['questions_wrong_ratio','questions_right_ratio','reading_min','reading_max','time_read_time_total','questions_visited_total','items_visited_total','time_nav_time_total','item_visited_new',
+#                                'time_map/time_total','items_revisits', 'questions_revisits'] # inf gain
+# 
+#     
     # weight of features with Info Gain
-#     feature_weights={'items_visited_total':len(list_features_new)-list_features_new.index('items_visited_total'),
-#                'questions_right_ratio':len(list_features_new)-list_features_new.index('questions_right_ratio'),
-#                'questions_visited_total':len(list_features_new)-list_features_new.index('questions_visited_total'),
-#                'questions_wrong_ratio':len(list_features_new)-list_features_new.index('questions_wrong_ratio'),
-#                'time_read_time_total':len(list_features_new)-list_features_new.index('time_read_time_total'),
-#                'time_nav_time_total':len(list_features_new)-list_features_new.index('time_nav_time_total'),
-#                'time_map/time_total':len(list_features_new)-list_features_new.index('time_map/time_total')}
+#     feature_orders={'items_visited_total':len(list_features_new)-list_features_new.index('items_visited_total'),
+#                 'questions_right_ratio':len(list_features_new)-list_features_new.index('questions_right_ratio'),
+#                 'questions_visited_total':len(list_features_new)-list_features_new.index('questions_visited_total'),
+#                 'questions_wrong_ratio':len(list_features_new)-list_features_new.index('questions_wrong_ratio'),
+#                 'time_read_time_total':len(list_features_new)-list_features_new.index('time_read_time_total'),
+#                 'time_nav_time_total':len(list_features_new)-list_features_new.index('time_nav_time_total'),
+#                 'time_map/time_total':len(list_features_new)-list_features_new.index('time_map/time_total'),
+#                 'reading_min':len(list_features_new)-list_features_new.index('reading_min'),
+#                 'reading_max':len(list_features_new)-list_features_new.index('reading_max'),
+#                 'item_visited_new':len(list_features_new)-list_features_new.index('item_visited_new'),
+#                 'items_revisits':len(list_features_new)-list_features_new.index('items_revisits'),
+#                 'questions_revisits':len(list_features_new)-list_features_new.index('questions_revisits')
+#                 }
     
 #     feature_weights={'items_visited_total':len(list_features_new)-list_features_new.index('items_visited_total'),
 #                  'questions_right_ratio':len(list_features_new)-list_features_new.index('questions_right_ratio'),
@@ -355,18 +378,18 @@ def cal_weight(my_section):
 #                  'questions_revisits':len(list_features_new)-list_features_new.index('questions_revisits')}
     
 #     
-    feature_weights={'items_visited_total':8,
+    feature_weights={'items_visited_total':10,
                  'questions_right_ratio':10,
                  'questions_visited_total':5,
                  'questions_wrong_ratio':10,
-                 'time_read_time_total':4,
-                 'time_nav_time_total':6,
+                 'time_read_time_total':10,
+                 'time_nav_time_total':4,
                  'time_map/time_total':1,
                  'reading_min':4,
                  'reading_max':4,
                  'item_visited_new':3,
                  'items_revisits':3,
-                 'questions_revisits':5,
+                 'questions_revisits':3,
                  }
     
     
@@ -374,33 +397,33 @@ def cal_weight(my_section):
     
     
     
-    return  feature_weights
+    return  feature_weights,feature_orders
     
     
 def Clustering_new(My_binded_data,my_section):
     #defining the styles and he features 
-    play_feature_dic_new={'items_visited_total':{'Achiever':'low','Explorer':'high','Careless':'low','other':'low'},
-                        'questions_right_ratio':{'Achiever':'high','Explorer':'high','Careless':'low','other':'low'},
-                        'questions_visited_total':{'Achiever':'high','Explorer':'low','Careless':'low','other':'low'},
+    play_feature_dic_new={'items_visited_total':{'Achiever':'low','Explorer':'high','Careless':'low','other':'high'},
+                'questions_right_ratio':{'Achiever':'high','Explorer':'high','Careless':'high','other':'low'},
+                'questions_visited_total':{'Achiever':'low','Explorer':'high','Careless':'low','other':'high'},
                         'questions_wrong_ratio':{'Achiever':'low','Explorer':'low','Careless':'high','other':'high'},
-                        'time_read_time_total':{'Achiever':'high','Explorer':'low','Careless':'low','other':'low'},
-                        'time_nav_time_total':{'Achiever':'low','Explorer':'high','Careless':'low','other':'high'},
-                        'time_map/time_total':{'Achiever':'high','Explorer':'high','Careless':'low','other':'low'},
-                        'reading_min':{'Achiever':'high','Explorer':'low','Careless':'low','other':'low'},
-                        'reading_max':{'Achiever':'high','Explorer':'low','Careless':'low','other':'low'},
-                        'item_visited_new':{'Achiever':'low','Explorer':'high','Careless':'low','other':'low'},
-                        'items_revisits':{'Achiever':'low','Explorer':'high','Careless':'high','other':'high'},
-                        'questions_revisits':{'Achiever':'high','Explorer':'low','Careless':'low','other':'high'}
+                         'time_read_time_total':{'Achiever':'low','Explorer':'high','Careless':'low','other':'high'},
+                          'time_nav_time_total':{'Achiever':'low','Explorer':'low','Careless':'low','other':'high'},
+                          'time_map/time_total':{'Achiever':'high','Explorer':'low','Careless':'low','other':'low'},
+                                  'reading_min':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'},
+                                  'reading_max':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'},
+                             'item_visited_new':{'Achiever':'low','Explorer':'low','Careless':'low','other':'high'},
+                               'items_revisits':{'Achiever':'low','Explorer':'high','Careless':'low','other':'high'},
+                           'questions_revisits':{'Achiever':'low','Explorer':'low','Careless':'high','other':'high'}
                         }
     
   
-    feature_weights=cal_weight(my_section)
+    feature_weights, feature_order=cal_weight(my_section)
     # print(My_binded_data)
     my_result=[]
     for indx in range(0,len(My_binded_data)):
         #print(My_binded_data)
         
-        my_result.append(extract_type(My_binded_data.iloc[indx,1:13],play_feature_dic_new,feature_weights))
+        my_result.append(extract_type(My_binded_data.iloc[indx,1:len(My_binded_data.columns)],play_feature_dic_new,feature_weights,feature_order))
         
     My_binded_data['Player_Type']=my_result
     print(My_binded_data)
