@@ -11,12 +11,12 @@ from os.path import isfile, join
 
 def main():
     #listing the name of the csv files
-    os.chdir("/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Binded_new")
+    os.chdir("/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/TestforOrders/csv_for_Atribute_selection")
     for filename in glob.glob("*.csv"):
         print(filename)
         # creating an empty ARFF file 
-        file_out = open("/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Arff_new_binded"+str(filename)+'.arff', "w")
-        call(['java', '-cp', '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Python_Code/weka.jar', 'weka.core.converters.CSVLoader', '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Binded_new/'+str(filename), '>', '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Arff_new_binded/'+str(filename)+'.arff'],
+        file_out = open("/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/TestforOrders/Arff_for_AttributeSelection"+str(filename)+'.arff', "w")
+        call(['java', '-cp', '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Python_Code/weka.jar', 'weka.core.converters.CSVLoader', '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/TestforOrders/csv_for_Atribute_selection/'+str(filename), '>', '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/TestforOrders/Arff_for_AttributeSelection/'+str(filename)+'.arff'],
                         stdout=file_out)
 
 

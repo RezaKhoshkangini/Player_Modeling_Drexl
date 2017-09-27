@@ -69,7 +69,7 @@ public class Training {
 
 		// Loading the main dataset for training
 		final File dir = new File(
-				"/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Time_Based/Two/Arff_binded/Old_Arff_binded_07062017");
+				"/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/New_Individual_users/ARFF");
 		// "/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/NewCSV/BindedData");
 		File[] listFiles = dir.listFiles(new FileFilter() {
 
@@ -106,6 +106,7 @@ public class Training {
 			String filename = fileEntry.getName();
 			// System.out.println(listFiles.length);
 			if (nbf) {
+				System.out.println(filename);
 				trainset = NaiveBayesfunction(train);
 
 				// predictionResult = prediction(trainset, filename, nbf, dtf,
@@ -497,7 +498,7 @@ public class Training {
 
 	private Object testcrossValidation(Object tt, Evaluation eval, Instances train) throws Exception {
 		// TODO Auto-generated method stub
-		eval.crossValidateModel((Classifier) tt, train, 4, new Random(1));
+		eval.crossValidateModel((Classifier) tt, train, 5, new Random(1));
 
 		return null;
 	}

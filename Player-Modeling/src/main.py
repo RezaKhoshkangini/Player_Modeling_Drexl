@@ -18,8 +18,10 @@ from convertor import convert
 from ml_sub_proc import Sub_Machine
 from pip._vendor.progress import counter
 from Individual_Classification import Ind_Classification
-from Order_Extraction import Class_Order_Extration
-import atribTest
+from Order_Extraction import Orderextraction
+from audioop import reverse
+
+
 
 
 def HisData(my_data):
@@ -292,12 +294,18 @@ def extract_type(my_sample,play_feature_dic_new,feature_weights,feature_orders):
             #print('this feature is medium')
             pass
         else:
-            feature_weight=feature_weights[key]
+            feature_weight=feature_orders[key]
+            my_ordertest={}
+            my_ordertest=sorted(feature_orders.values(),reverse=True)
+            
+            feature_order=my_ordertest.index(feature_orders[key])
+            feature_weight=feature_orders[key]
+            #feature_weight=feature_weights[key]
             for key1 in item.keys():
                 if (item[key1]==my_sample[key]):
-                    my_vote[key1]+=feature_weight*1/(feature_orders.index(key)+1)
+                    my_vote[key1]+=feature_weight*1/(feature_order+1)
                 else:
-                    my_vote[key1]-=feature_weight*1/(feature_orders.index(key)+1)
+                    my_vote[key1]-=feature_weight*1/(feature_order+1)
                     
             #print(my_vote)               
     
@@ -307,15 +315,15 @@ def extract_type(my_sample,play_feature_dic_new,feature_weights,feature_orders):
     #return(max(my_vote,key=my_vote.get))           #returns only labels
     return(sorted(my_vote,key=my_vote.get, reverse=True)[0])
    
-def cal_orders(list_features):
-    print()
+
     
 
 
-def cal_weight(my_section):  
+def cal_weight(my_section,nameOfthefile):  
     
-   atribTest(my_section)
-   # Class_Order_Extration()
+   # atribTest(my_section)
+    my_weight_orders=Orderextraction(my_section,nameOfthefile)
+    
    # Class_Order_Extration.orderextraction('order_finding')
     
     feature_orders=['questions_visited_total','questions_right_ratio','time_read_time_total','items_visited_total','questions_wrong_ratio',
@@ -397,10 +405,10 @@ def cal_weight(my_section):
     
     
     
-    return  feature_weights,feature_orders
+    return  feature_weights,my_weight_orders
     
     
-def Clustering_new(My_binded_data,my_section):
+def Clustering_new(My_binded_data,my_section,nameOfthefile):
     #defining the styles and he features 
     play_feature_dic_new={'items_visited_total':{'Achiever':'low','Explorer':'high','Careless':'low','other':'high'},
                 'questions_right_ratio':{'Achiever':'high','Explorer':'high','Careless':'high','other':'low'},
@@ -417,7 +425,7 @@ def Clustering_new(My_binded_data,my_section):
                         }
     
   
-    feature_weights, feature_order=cal_weight(my_section)
+    feature_weights, feature_order=cal_weight(my_section,nameOfthefile)
     # print(My_binded_data)
     my_result=[]
     for indx in range(0,len(My_binded_data)):
@@ -457,7 +465,7 @@ def main():
         print(nameOfthefile)
         #data_binded=CategorizeData(data)
     #Clustring
-        data_labaled=Clustering_new(data_binded,i)
+        data_labaled=Clustering_new(data_binded,i,nameOfthefile)
      #   data_labaled=Culstring_Players(data_binded)
         TmpContiner=pd.DataFrame(data_labaled)
         Lists_Labeled_data[i]=TmpContiner# adding all the labled data into a list
