@@ -22,7 +22,8 @@ from Order_Extraction import Orderextraction
 from audioop import reverse
 from List_to_CSV import wrt_to_csv
 from Player_Sepration import WritCsv
-
+from Configuration import config 
+ 
 
 
 def HisData(my_data):
@@ -359,19 +360,7 @@ def cal_weight(my_section,nameOfthefile):
     
 def Clustering_new(My_binded_data,my_section,nameOfthefile):
     #defining the styles and he features 
-    play_feature_dic_new={'items_visited_total':{'Achiever':'low','Explorer':'high','Careless':'high','other':'low'},
-                          'questions_right_ratio':{'Achiever':'high','Explorer':'high','Careless':'low','other':'low'},
-                          'questions_visited_total':{'Achiever':'low','Explorer':'high','Careless':'high','other':'high'},
-                          'questions_wrong_ratio':{'Achiever':'low','Explorer':'low','Careless':'high','other':'high'},
-                          'time_read_time_total':{'Achiever':'low','Explorer':'high','Careless':'high','other':'low'},
-                          'time_nav_time_total':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'},
-                          'time_map/time_total':{'Achiever':'high','Explorer':'low','Careless':'low','other':'low'},
-                          'reading_min':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'},
-                          'reading_max':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'},
-                          'item_visited_new':{'Achiever':'low','Explorer':'low','Careless':'low','other':'high'},
-                          'items_revisits':{'Achiever':'low','Explorer':'high','Careless':'low','other':'low'},
-                          'questions_revisits':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'}
-                        }
+    
     
   
     feature_order=cal_weight(my_section,nameOfthefile)
@@ -381,7 +370,7 @@ def Clustering_new(My_binded_data,my_section,nameOfthefile):
     my_result_confidence=[]
     for indx in range(0,len(My_binded_data)):
         #print(My_binded_data)
-        
+        play_feature_dic_new=config()
         selected_style,confid,styles_confidecs=extract_type(My_binded_data.iloc[indx,0:len(My_binded_data.columns)],play_feature_dic_new,feature_order)
         my_result.append(selected_style)
         my_confid.append(confid)

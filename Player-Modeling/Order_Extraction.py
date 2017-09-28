@@ -128,8 +128,8 @@ def Orderextraction(my_section,nameOfthefile):
             colname=my_array.columns.tolist()
             colname=colname[:-1]
             array=my_array.values
-            my_weight_dic=SVMmethod(array,colname)
-          #  my_weight_dic=TreeForest(array,colname)
+          #  my_weight_dic=SVMmethod(array,colname)
+            my_weight_dic=TreeForest(array,colname)
          #array = dataframe.values
             
             return my_weight_dic
