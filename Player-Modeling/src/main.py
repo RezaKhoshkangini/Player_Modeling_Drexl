@@ -1,7 +1,7 @@
 '''
 Created on May 11, 2017
 
-@author: rezakhoshkangini
+@author: Reza Khoshkangini PhD Student DAS Unit FBK and Univesity of Padova
 '''
 import sys
 import csv 
@@ -20,7 +20,8 @@ from pip._vendor.progress import counter
 from Individual_Classification import Ind_Classification
 from Order_Extraction import Orderextraction
 from audioop import reverse
-
+from List_to_CSV import wrt_to_csv
+from Player_Sepration import WritCsv
 
 
 
@@ -284,9 +285,13 @@ def path_leaf(path):
     return tail or ntpath.basename(head)  
 
 
-def extract_type(my_sample,play_feature_dic_new,feature_weights,feature_orders):
+def extract_type(my_sample,play_feature_dic_new,feature_orders):
     # print (feature_weights)
     my_vote = {"Achiever":0,"Explorer":0,"Careless":0,"other":0} 
+    
+    my_lst_key=["Id_Name","Achiever","Explorer","Careless","other"]
+    my_vote_id = {"Id_Name":my_sample[0],"Achiever":[],"Explorer":[],"Careless":[],"other":[]} 
+    my_vote_id_con = {"Id_Name":my_sample[0],"Achiever":0,"Achiever_Conf":0,"Explorer":0,"Explorer_Conf":0,"Careless":0,"Careless_Conf":0,"other":0,"other_Conf":0}
     for key,item in play_feature_dic_new.items():
         # print(key)
         if my_sample[key]=='medium':
@@ -303,20 +308,29 @@ def extract_type(my_sample,play_feature_dic_new,feature_weights,feature_orders):
             #feature_weight=feature_weights[key]
             for key1 in item.keys():
                 if (item[key1]==my_sample[key]):
-                    my_vote[key1]+=feature_weight*1/(feature_order+1)
+                    my_vote[key1]+=feature_weight*(1/(feature_order+1))
                 else:
-                    my_vote[key1]-=feature_weight*1/(feature_order+1)
+                    my_vote[key1]-=feature_weight*(1/(feature_order+1))
+                    
                     
             #print(my_vote)               
-    
+    total_weight=sum(feature_orders.values())
+    for cokey in my_vote.keys():
+        my_confidence=round((my_vote[cokey]/total_weight)*100)  
+        my_vote_id_con.update(my_vote)  
+        my_vote_id_con[cokey+str('_Conf')]=my_confidence
+        
+        #my_vote_id[cokey].append(my_vote[cokey])
+        #my_vote_id[cokey].append(my_confidence)
+        
+        
     if len(set(my_vote.values()))==2:
         print('they are similar')
         print(my_vote)              
     #return(max(my_vote,key=my_vote.get))           #returns only labels
-    return(sorted(my_vote,key=my_vote.get, reverse=True)[0])
+    return(sorted(my_vote,key=my_vote.get, reverse=True)[0],my_vote_id_con[sorted(my_vote,key=my_vote.get, reverse=True)[0]+str('_Conf')]
+,my_vote_id_con)
    
-
-    
 
 
 def cal_weight(my_section,nameOfthefile):  
@@ -324,129 +338,62 @@ def cal_weight(my_section,nameOfthefile):
    # atribTest(my_section)
     my_weight_orders=Orderextraction(my_section,nameOfthefile)
     
-   # Class_Order_Extration.orderextraction('order_finding')
-    
-    feature_orders=['questions_visited_total','questions_right_ratio','time_read_time_total','items_visited_total','questions_wrong_ratio',
-                                  'time_map/time_total','time_nav_time_total','reading_min','reading_max','item_visited_new','items_revisits','questions_revisits']
-    
-    
-#     if my_section==0:
-#             # info Gain
-              # list_features_new=['questions_visited_total','questions_right_ratio','time_read_time_total','items_visited_total','questions_wrong_ratio',
-              #                    'time_map/time_total','time_nav_time_total',] # inf gain
-#              Corelation
-#             list_features_new=['reading_min','items_visited_total','item_visited_new','reading_max','questions_revisits','questions_visited_total','questions_wrong_ratio','questions_right_ratio',
-#                                'items_revisits','time_read_time_total','time_nav_time_total','time_map/time_total'] # inf gain
-#     elif my_section==1:
-#             # InfoGain Order
-#             # list_features_new=['items_visited_total','time_map/time_total','questions_visited_total','questions_wrong_ratio','questions_right_ratio','time_read_time_total','time_nav_time_total'] # inf gain
-#             # Correlation Order
-#             list_features_new=['items_visited_total','time_map/time_total','item_visited_new','questions_visited_total','items_revisits','time_read_time_total','reading_min','reading_max','time_nav_time_total',
-#                                'questions_revisits','questions_wrong_ratio','questions_right_ratio'] # inf gain
-#     elif my_section==2:
-#             # Info Gain order
-#             #list_features_new=['items_visited_total','time_map/time_total','questions_visited_total','questions_wrong_ratio','questions_right_ratio','time_read_time_total','time_nav_time_total'] # inf gain
-#             # Correlation Order
-#             list_features_new=['items_visited_total','questions_visited_total','time_map/time_total','reading_max','reading_min','item_visited_new','questions_right_ratio','questions_wrong_ratio','items_revisits',
-#                                'questions_revisits','time_nav_time_total','time_read_time_total'] # inf gain
-#     else:    #for section 4
-#             #Infogain Order
-#            # list_features_new=['questions_wrong_ratio','questions_right_ratio','time_nav_time_total','time_read_time_total','questions_visited_total','time_map/time_total','items_visited_total'] # inf gain
-#             #Correlation order
-#             list_features_new=['questions_wrong_ratio','questions_right_ratio','reading_min','reading_max','time_read_time_total','questions_visited_total','items_visited_total','time_nav_time_total','item_visited_new',
-#                                'time_map/time_total','items_revisits', 'questions_revisits'] # inf gain
-# 
-#     
-    # weight of features with Info Gain
-#     feature_orders={'items_visited_total':len(list_features_new)-list_features_new.index('items_visited_total'),
-#                 'questions_right_ratio':len(list_features_new)-list_features_new.index('questions_right_ratio'),
-#                 'questions_visited_total':len(list_features_new)-list_features_new.index('questions_visited_total'),
-#                 'questions_wrong_ratio':len(list_features_new)-list_features_new.index('questions_wrong_ratio'),
-#                 'time_read_time_total':len(list_features_new)-list_features_new.index('time_read_time_total'),
-#                 'time_nav_time_total':len(list_features_new)-list_features_new.index('time_nav_time_total'),
-#                 'time_map/time_total':len(list_features_new)-list_features_new.index('time_map/time_total'),
-#                 'reading_min':len(list_features_new)-list_features_new.index('reading_min'),
-#                 'reading_max':len(list_features_new)-list_features_new.index('reading_max'),
-#                 'item_visited_new':len(list_features_new)-list_features_new.index('item_visited_new'),
-#                 'items_revisits':len(list_features_new)-list_features_new.index('items_revisits'),
-#                 'questions_revisits':len(list_features_new)-list_features_new.index('questions_revisits')
-#                 }
-    
-#     feature_weights={'items_visited_total':len(list_features_new)-list_features_new.index('items_visited_total'),
-#                  'questions_right_ratio':len(list_features_new)-list_features_new.index('questions_right_ratio'),
-#                  'questions_visited_total':len(list_features_new)-list_features_new.index('questions_visited_total'),
-#                  'questions_wrong_ratio':len(list_features_new)-list_features_new.index('questions_wrong_ratio'),
-#                  'time_read_time_total':len(list_features_new)-list_features_new.index('time_read_time_total'),
-#                  'time_nav_time_total':len(list_features_new)-list_features_new.index('time_nav_time_total'),
-#                  'time_map/time_total':len(list_features_new)-list_features_new.index('time_map/time_total'),
-#                  'reading_min':len(list_features_new)-list_features_new.index('reading_min'),
-#                  'reading_max':len(list_features_new)-list_features_new.index('reading_max'),
-#                  'item_visited_new':len(list_features_new)-list_features_new.index('item_visited_new'),
-#                  'items_revisits':len(list_features_new)-list_features_new.index('items_revisits'),
-#                  'questions_revisits':len(list_features_new)-list_features_new.index('questions_revisits')}
-    
-#     
-    feature_weights={'items_visited_total':10,
-                 'questions_right_ratio':10,
-                 'questions_visited_total':5,
-                 'questions_wrong_ratio':10,
-                 'time_read_time_total':10,
-                 'time_nav_time_total':4,
-                 'time_map/time_total':1,
-                 'reading_min':4,
-                 'reading_max':4,
-                 'item_visited_new':3,
-                 'items_revisits':3,
-                 'questions_revisits':3,
-                 }
+   # Manulay insert the weights
+#     feature_weights={'items_visited_total':10,
+#                  'questions_right_ratio':10,
+#                  'questions_visited_total':5,
+#                  'questions_wrong_ratio':10,
+#                  'time_read_time_total':10,
+#                  'time_nav_time_total':4,
+#                  'time_map/time_total':1,
+#                  'reading_min':4,
+#                  'reading_max':4,
+#                  'item_visited_new':3,
+#                  'items_revisits':3,
+#                  'questions_revisits':3,
+#                  }
     
     
-    
-    
-    
-    
-    return  feature_weights,my_weight_orders
+    return  my_weight_orders
     
     
 def Clustering_new(My_binded_data,my_section,nameOfthefile):
     #defining the styles and he features 
-    play_feature_dic_new={'items_visited_total':{'Achiever':'low','Explorer':'high','Careless':'low','other':'high'},
-                'questions_right_ratio':{'Achiever':'high','Explorer':'high','Careless':'high','other':'low'},
-                'questions_visited_total':{'Achiever':'low','Explorer':'high','Careless':'low','other':'high'},
-                        'questions_wrong_ratio':{'Achiever':'low','Explorer':'low','Careless':'high','other':'high'},
-                         'time_read_time_total':{'Achiever':'low','Explorer':'high','Careless':'low','other':'high'},
-                          'time_nav_time_total':{'Achiever':'low','Explorer':'low','Careless':'low','other':'high'},
+    play_feature_dic_new={'items_visited_total':{'Achiever':'low','Explorer':'high','Careless':'high','other':'low'},
+                          'questions_right_ratio':{'Achiever':'high','Explorer':'high','Careless':'low','other':'low'},
+                          'questions_visited_total':{'Achiever':'low','Explorer':'high','Careless':'high','other':'high'},
+                          'questions_wrong_ratio':{'Achiever':'low','Explorer':'low','Careless':'high','other':'high'},
+                          'time_read_time_total':{'Achiever':'low','Explorer':'high','Careless':'high','other':'low'},
+                          'time_nav_time_total':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'},
                           'time_map/time_total':{'Achiever':'high','Explorer':'low','Careless':'low','other':'low'},
-                                  'reading_min':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'},
-                                  'reading_max':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'},
-                             'item_visited_new':{'Achiever':'low','Explorer':'low','Careless':'low','other':'high'},
-                               'items_revisits':{'Achiever':'low','Explorer':'high','Careless':'low','other':'high'},
-                           'questions_revisits':{'Achiever':'low','Explorer':'low','Careless':'high','other':'high'}
+                          'reading_min':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'},
+                          'reading_max':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'},
+                          'item_visited_new':{'Achiever':'low','Explorer':'low','Careless':'low','other':'high'},
+                          'items_revisits':{'Achiever':'low','Explorer':'high','Careless':'low','other':'low'},
+                          'questions_revisits':{'Achiever':'low','Explorer':'low','Careless':'low','other':'low'}
                         }
     
   
-    feature_weights, feature_order=cal_weight(my_section,nameOfthefile)
+    feature_order=cal_weight(my_section,nameOfthefile)
     # print(My_binded_data)
     my_result=[]
+    my_confid=[]
+    my_result_confidence=[]
     for indx in range(0,len(My_binded_data)):
         #print(My_binded_data)
         
-        my_result.append(extract_type(My_binded_data.iloc[indx,1:len(My_binded_data.columns)],play_feature_dic_new,feature_weights,feature_order))
+        selected_style,confid,styles_confidecs=extract_type(My_binded_data.iloc[indx,0:len(My_binded_data.columns)],play_feature_dic_new,feature_order)
+        my_result.append(selected_style)
+        my_confid.append(confid)
+        my_result_confidence.append(styles_confidecs)
         
     My_binded_data['Player_Type']=my_result
+    My_binded_data['Confidence']=my_confid
+   
     print(My_binded_data)
+  
     
-   # return My_binded_data
-    
-  #  csvfile = '/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/Cluster_Validation/Sectoin'+str(my_section)+'.csv'
-# 
-     #Assuming res is a flat list
-    #with open(csvfile, "w") as output:
-       # writer = csv.writer(output, lineterminator='\n')
-      #  for val in My_binded_data:
-      #      writer.writerow([val])
-    
-    return My_binded_data
+    return My_binded_data,my_result_confidence
     
     
             
@@ -459,20 +406,23 @@ def main():
     i=0
     for key in Csv_Dics.keys():
     # data["Read_time_Bin"]=CategorizeData(data['x0_time_read_time_total'], cut_points, labels)
+        
         print(key)
         data_binded=CategorizeData(Csv_Dics[key],0)
         nameOfthefile=path_leaf(key)
         print(nameOfthefile)
+        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/Labeled/"
         #data_binded=CategorizeData(data)
     #Clustring
-        data_labaled=Clustering_new(data_binded,i,nameOfthefile)
+        data_labaled,data_confid=Clustering_new(data_binded,i,nameOfthefile)
+        WritCsv(data_confid,path+str('Conf_'+nameOfthefile))
      #   data_labaled=Culstring_Players(data_binded)
         TmpContiner=pd.DataFrame(data_labaled)
         Lists_Labeled_data[i]=TmpContiner# adding all the labled data into a list
     #writing bindeded data to CSV file
        
-        path="/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/Labeled/M"+nameOfthefile
-        WritCsv(data_labaled,path)
+        
+        WritCsv(data_labaled,path+str('Result_'+nameOfthefile))
         i=i+1
     #
    #calling classification class 
