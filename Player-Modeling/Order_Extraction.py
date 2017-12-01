@@ -30,15 +30,10 @@ from pandas.core.internals import items_overlap_with_suffix
 import ntpath
 from sklearn.feature_selection import SelectKBest, f_classif,chi2,SelectFromModel
 from sklearn.svm import LinearSVC
-# class Class_Order_Extration:
-#     '''
-#     classdocs
-#     '''
-# 
-# 
-#     def __init__(self,my_section):
-#        # self.__init__(my_section)
-#         self.orderextraction=my_section
+from sklearn.model_selection import train_test_split
+
+
+
 #  
 def SVMmethod(arrayb,colname):
     
@@ -65,6 +60,43 @@ def SVMmethod(arrayb,colname):
     #sklearn.feature_selection.mutual_info_regression(X1, Y1, discrete_features=’auto’, n_neighbors=3, copy=True, random_state=None)
     
     return my_weight_dic
+ 
+def Random_Forest(arrayb,colname):
+    
+  #  X1 = arrayb[:,0:12]
+  #  Y1 = arrayb[:,12]
+    styles = arrayb[:,12]
+    X = arrayb[:,0:12]
+    my_style=np.zeros(55) 
+    i=0
+    for style in styles:
+        if style=='Achiever':
+            my_style[i]=1
+        elif  style=='Explorer':
+            my_style[i]=2
+        elif  style=='Careless':
+            my_style[i]=3
+        else:
+            my_style[i]=4
+        i=i+1             
+        
+   
+    
+    model=RandomForestRegressor()
+    model.fit(X,my_style)
+    
+    my_weight=model.feature_importances_
+    std = np.std([tree.feature_importances_ for tree in model.estimators_],axis=0)
+    indices = np.argsort(my_weight)[::-1]
+    
+    my_list=my_weight.tolist()
+    my_weight_dic=dict(zip(colname,my_list))
+    
+    
+    return my_weight_dic
+ 
+ 
+ 
  
 def TreeForest(array,colname):
     X = array[:,0:12]
@@ -103,6 +135,9 @@ def TreeForest(array,colname):
             
     return  my_weight_dic
  
+ 
+ 
+ 
        
 def my_path_leaf(path):
     head, tail = ntpath.split(path)
@@ -110,9 +145,12 @@ def my_path_leaf(path):
     return tail or ntpath.basename(head) 
         
 def Orderextraction(my_section,nameOfthefile):
-        
+    my_section=0
+    nameOfthefile='section1.csv'    
     print('hello reza')
-    path='/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/TestforOrders/csv_for_Atribute_selection'
+    #path='/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/TestforOrders/csv_for_Atribute_selection/SectionbySection'
+    path='/Users/rezakhoshkangini/Documents/Drexel_Documents/Work/Mat-Code/newExperiment_Trento/Sections/Sections_new_features/TestforOrders/csv_for_Atribute_selection/TotalSection'
+
     csvFiles = glob.glob(path + "/*.csv")
     listoflist={}
     unique_headers = set()
@@ -130,7 +168,8 @@ def Orderextraction(my_section,nameOfthefile):
             array=my_array.values
           #  my_weight_dic=SVMmethod(array,colname)
             my_weight_dic=TreeForest(array,colname)
-         #array = dataframe.values
+          #  my_weight_dic=Random_Forest(array,colname)
+        
             
             return my_weight_dic
         

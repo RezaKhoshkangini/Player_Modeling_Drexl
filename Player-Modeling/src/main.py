@@ -23,6 +23,7 @@ from audioop import reverse
 from List_to_CSV import wrt_to_csv
 from Player_Sepration import WritCsv
 from Configuration import config 
+import time
  
 
 
@@ -310,8 +311,10 @@ def extract_type(my_sample,play_feature_dic_new,feature_orders):
             for key1 in item.keys():
                 if (item[key1]==my_sample[key]):
                     my_vote[key1]+=feature_weight*(1/(feature_order+1))
+                   # my_vote[key1]+=feature_weight
                 else:
                     my_vote[key1]-=feature_weight*(1/(feature_order+1))
+                    #my_vote[key1]-=feature_weight
                     
                     
             #print(my_vote)               
@@ -354,7 +357,7 @@ def cal_weight(my_section,nameOfthefile):
 #                  'questions_revisits':3,
 #                  }
     
-    
+  #  print(my_weight_orders)
     return  my_weight_orders
     
     
@@ -362,15 +365,14 @@ def Clustering_new(My_binded_data,my_section,nameOfthefile):
     #defining the styles and he features 
     
     
-  
     feature_order=cal_weight(my_section,nameOfthefile)
-    # print(My_binded_data)
+    print(feature_order)
     my_result=[]
     my_confid=[]
     my_result_confidence=[]
     for indx in range(0,len(My_binded_data)):
         #print(My_binded_data)
-        play_feature_dic_new=config()
+        play_feature_dic_new=config(my_section)
         selected_style,confid,styles_confidecs=extract_type(My_binded_data.iloc[indx,0:len(My_binded_data.columns)],play_feature_dic_new,feature_order)
         my_result.append(selected_style)
         my_confid.append(confid)
